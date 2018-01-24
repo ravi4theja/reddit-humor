@@ -92,6 +92,11 @@ class Post extends Component {
       borderRadius: 2 
     }
   }
+
+  handleClickFullScreen = () => {
+    document.getElementById('root').webkitRequestFullscreen()
+  }
+
   componentDidMount() {
     const container = document.getElementById('bodyContainer')
     this.setState({
@@ -138,6 +143,7 @@ class Post extends Component {
             <div className={classes.btns}>
               <Button raised onClick={this.handleClickNext}>NEXT</Button>
               <Button raised style={{marginTop: 15}} onClick={this.handleClickNSFW}>NSFW?</Button>
+              <Button raised style={{marginTop: 15, display: document.webkitIsFullScreen? 'none': 'block'}} onClick={this.handleClickFullScreen}>FullScreen</Button>
             </div>   
           </div>
         </CSSTransition>         

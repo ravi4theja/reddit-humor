@@ -53,7 +53,7 @@ class App extends Component {
     const { show } = this.state;
 
     return (
-      <div className="App" style={{height: window.innerHeight}}>
+      <div className="App" style={{width: window.innerWidth, height: window.innerHeight}}>
         {this.state.posts.length !== 0  && 
           <Post 
             post={this.state.posts[this.state.currentPost]} 
