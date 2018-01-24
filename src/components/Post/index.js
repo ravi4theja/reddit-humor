@@ -43,6 +43,8 @@ let scrollIntervalId, setTimeoutIdToTop, setTimeoutIdToBottom;
 
 class Post extends Component {
 
+  state = {containerHeight: 0, containerWidth: 0}
+
   mediaEl = null;
 
   handleClickNext = () => {
@@ -74,7 +76,28 @@ class Post extends Component {
     }, 20)
   }
 
+  setImageStyles = (image) => {
+    let h, w
+
+    if (image.height > image.width && image.height > this.state.containerHeight * 1.5){
+      w = Math.min(image.width, this.state.containerWidth)
+    } else {
+      h = Math.min(image.height, this.state.containerHeight)
+    }
+
+    return {
+      margin: 2,
+      height: h, 
+      width: w,
+      borderRadius: 2 
+    }
+  }
   componentDidMount() {
+    const container = document.getElementById('bodyContainer')
+    this.setState({
+      containerHeight: container.clientHeight * 0.8,
+      containerWidth: container.clientWidth * 0.8
+    })
     this.scrollToBottom();
   }
 
@@ -100,16 +123,10 @@ class Post extends Component {
           <div className={classes.post} key={postData.id}>
             <div className={classes.paper}>
               <Typography type='title' className={classes.title}>{postData.title}</Typography>
-              <div className={classes.content} ref={e => this.mediaEl = e}>
+              <div className={classes.content} id='bodyContainer' ref={e => this.mediaEl = e}>
                 {media && 
                   <img 
-                    style={{
-                      margin: 2,
-                      height: media.height, 
-                      width: media.width, 
-                      maxWidth: '90%', 
-                      borderRadius: 2 
-                    }} 
+                    style={this.setImageStyles(media)} 
                     key={media.url} 
                     src={media.url} 
                     alt='lol' 
