@@ -19,29 +19,30 @@ const styles = theme => ({
   }
 })
 
-let scrollIntervalId, setTimeoutIdToTop, setTimeoutIdToBottom;
-
 class Post extends Component {
 
   mediaEl = null;
+  scrollIntervalId = null;
+  setTimeoutIdToTop = null;
+  setTimeoutIdToBottom = null;
 
   scrollToBottom = () => {
-    scrollIntervalId = setInterval(() => {
+    this.scrollIntervalId = setInterval(() => {
       let prevScrollTop = this.mediaEl.scrollTop;
       this.mediaEl.scrollTop += 1;
       if(this.mediaEl.scrollTop === prevScrollTop) {
-        clearInterval(scrollIntervalId);
-        setTimeoutIdToTop = setTimeout(this.scrollToTop, 2000);
+        clearInterval(this.scrollIntervalId);
+        this.setTimeoutIdToTop = setTimeout(this.scrollToTop, 2000);
       }
     }, 20)
   }
 
   scrollToTop = () => {
-    scrollIntervalId = setInterval(() => {
+    this.scrollIntervalId = setInterval(() => {
       this.mediaEl.scrollTop -= 1;
       if(this.mediaEl.scrollTop === 0) {
-        clearInterval(scrollIntervalId);
-        setTimeoutIdToBottom = setTimeout(this.scrollToBottom, 2000);
+        clearInterval(this.scrollIntervalId);
+        this.setTimeoutIdToBottom = setTimeout(this.scrollToBottom, 2000);
       }
     }, 20)
   }
@@ -74,9 +75,9 @@ class Post extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    clearInterval(scrollIntervalId);
-    if(setTimeoutIdToTop) clearTimeout(setTimeoutIdToTop);
-    if(setTimeoutIdToBottom) clearTimeout(setTimeoutIdToBottom);
+    clearInterval(this.scrollIntervalId);
+    if(this.setTimeoutIdToTop) clearTimeout(this.setTimeoutIdToTop);
+    if(this.setTimeoutIdToBottom) clearTimeout(this.setTimeoutIdToBottom);
     this.scrollToBottom();
   }
 

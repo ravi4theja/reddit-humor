@@ -26,6 +26,9 @@ const styles = theme => ({
     position: 'absolute',
     right: 50,
     top: '45%'
+  },
+  btn: {
+    borderRadius: '999em'
   }
 })
 
@@ -96,10 +99,11 @@ class App extends Component {
               />
             </div>
             <div className={classes.btns}>
-              <Button raised onClick={this.updatePost}>NEXT</Button>
-              <Button raised style={{marginTop: 15}} onClick={() => { this.blackList(post.data.id)}}>NSFW?</Button>
+              <Button raised className={classes.btn} onClick={this.updatePost}>NEXT</Button>
+              <Button raised className={classes.btn} style={{marginTop: 15}} onClick={() => { this.blackList(post.data.id)}}>NSFW?</Button>
               <Button 
                 raised 
+                className={classes.btn}
                 style={{marginTop: 15, display: document.webkitIsFullScreen? 'none': 'block'}}
                 onClick={this.handleClickFullScreen}>FullScreen
               </Button>
