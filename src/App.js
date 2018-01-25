@@ -2,11 +2,32 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 import Post from './components/Post';
+import Button from 'material-ui/Button';
+import { withStyles } from 'material-ui/styles';
+import * as util from './utils';
+import * as consts from './constants';
 
-const fetchPosts = url => fetch(url).then(res => res.json());
-
-let postsIntervalId;
-const NSFWPOSTS = {};
+const styles = theme => ({
+  post: {
+    margin: 5,
+    padding: 20,
+    height: '100%',
+    position: 'relative',
+  },
+  paper: {
+    padding: 20,
+    height: '100%',
+    boxShadow: '0px 0px 83px -8px rgba(0,0,0,0.75)',
+    borderRadius: '5px 5px 5px 5px'
+  },
+  btns: {
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    right: 50,
+    top: '45%'
+  }
+})
 
 class App extends Component {
 
@@ -16,27 +37,30 @@ class App extends Component {
     show: false
   }
 
+  postsIntervalId = null;
+  NSFWPOSTS = {};
+
   initPosts = async () => {
-    const posts = await fetchPosts('https://www.reddit.com/r/programmerhumor/hot/.json?raw_json=1')
-                        .then(data => data.data.children.filter(post => !post.data.stickied && !NSFWPOSTS[post.data.id]));
+
+    const posts = await util.fetchPosts(consts.URLS)
+                        .then(data => {
+                          const results = [].concat(...data.map(result => result.data.children));
+                          return results.filter(post => !post.data.stickied && !this.NSFWPOSTS[post.data.id]);
+                        })
+
     this.setState(prevState => ({posts, currentPost: 0, show: !prevState.show}), () => {
-      postsIntervalId = setInterval(() => {
-        this.updatePost()
-      }, 20000)
+      this.postsIntervalId = setInterval(this.updatePost, 20000)
     })
+
   }
 
   updatePost = () => {
-    clearInterval(postsIntervalId);
+    clearInterval(this.postsIntervalId);
     this.setState(prevState => ({show: !prevState.show}), () => {
-      if(this.state.currentPost === this.state.posts.length - 1) {     
-        this.initPosts();
-      } 
+      if(this.state.currentPost === this.state.posts.length - 1) this.initPosts();
       else {
         this.setState(prevState => ({currentPost: ++prevState.currentPost, show: !prevState.show}), () => {
-          postsIntervalId = setInterval(() => {
-            this.updatePost()
-          }, 20000)
+          this.postsIntervalId = setInterval(this.updatePost, 20000)
         })
       }  
     })
@@ -46,25 +70,41 @@ class App extends Component {
       this.initPosts();
   }
 
-  blackList = id => NSFWPOSTS[id] = true;
+  blackList = id => this.NSFWPOSTS[id] = true;
+
+  handleClickFullScreen = () => {
+    document.getElementsByTagName('html')[0].webkitRequestFullscreen()
+  }
 
   render() {
-    
-    const { show } = this.state;
+    const { classes } = this.props;
+    const { posts, currentPost, show } = this.state;
+    const post = posts[currentPost];
 
     return (
-      <div className="App" style={{width: window.innerWidth, height: window.innerHeight}}>
+      <div className="App" style={{width: '100vw', height: '100vh'}}>
         {this.state.posts.length !== 0  && 
-          <Post 
-            post={this.state.posts[this.state.currentPost]} 
-            onClickNext={this.updatePost} 
-            onClickNSFW={this.blackList}
-            in={show}
-          />
+          <div className={classes.post}>
+            <div className={classes.paper}>
+              <Post 
+                post={post} 
+                show={show}
+              />
+            </div>
+            <div className={classes.btns}>
+              <Button raised onClick={this.updatePost}>NEXT</Button>
+              <Button raised style={{marginTop: 15}} onClick={() => { this.blackList(post.data.id)}}>NSFW?</Button>
+              <Button 
+                raised 
+                style={{marginTop: 15, display: document.webkitIsFullScreen? 'none': 'block'}}
+                onClick={this.handleClickFullScreen}>FullScreen
+              </Button>
+            </div>  
+          </div>
         }
       </div>
     );
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
