@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';
 import 'whatwg-fetch';
 import Post from './components/Post';
 import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
 import * as util from './utils';
 import * as consts from './constants';
+import screenfull from 'screenfull';
 
 const styles = theme => ({
   post: {
@@ -73,7 +73,11 @@ class App extends Component {
   blackList = id => this.NSFWPOSTS[id] = true;
 
   handleClickFullScreen = () => {
-    document.getElementsByTagName('html')[0].webkitRequestFullscreen()
+    if (screenfull.enabled) {
+      screenfull.request();
+    } else {
+      alert('full screen is not enabled')
+    }
   }
 
   render() {
@@ -82,7 +86,7 @@ class App extends Component {
     const post = posts[currentPost];
 
     return (
-      <div className="App" style={{width: '100vw', height: '100vh'}}>
+      <div className="App">
         {this.state.posts.length !== 0  && 
           <div className={classes.post}>
             <div className={classes.paper}>

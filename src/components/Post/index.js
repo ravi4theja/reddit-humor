@@ -46,13 +46,16 @@ class Post extends Component {
     }, 20)
   }
 
+
   setMediaStyles = media => {
     let height, width;
     if(this.mediaEl) {
-      if (media.height > media.width && media.height > this.mediaEl * 0.8 * 1.5){
+      if (media.height * 0.7 > media.width && media.height > this.mediaEl.clientHeight * 0.8 * 1.5){
         width = Math.min(media.width, this.mediaEl.clientWidth * 0.8)
+        height = 'auto';
       } else {
-        height = Math.min(media.height, this.mediaEl.clientHeight * 0.8)
+        width = 'auto';
+        height = Math.min(media.height, this.mediaEl.clientHeight * 0.8);
       }
     }
     
@@ -60,6 +63,7 @@ class Post extends Component {
       margin: 2,
       height,
       width,
+      maxWidth: '85%',
       borderRadius: 2 
     }
   }
@@ -83,7 +87,7 @@ class Post extends Component {
     
     return (
       <CSSTransition
-        timeout={1000}
+        timeout={500}
         classNames='fade'
         in={this.props.show}
         appear={true}
