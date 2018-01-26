@@ -51,12 +51,12 @@ class Post extends Component {
   setMediaStyles = media => {
     let height, width;
     if(this.mediaEl) {
-      if (media.height * 0.7 > media.width && media.height > this.mediaEl.clientHeight * 0.8 * 1.5){
-        width = Math.min(media.width, this.mediaEl.clientWidth * 0.8)
+      if (media.height * 0.7 > media.width && media.height > this.mediaEl.clientHeight * 1.5){
+        width = Math.min(media.width, this.mediaEl.clientWidth)
         height = 'auto';
       } else {
         width = 'auto';
-        height = Math.min(media.height, this.mediaEl.clientHeight * 0.8);
+        height = Math.min(media.height, this.mediaEl.clientHeight * 0.9);
       }
     }
     
