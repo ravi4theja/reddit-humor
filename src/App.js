@@ -104,7 +104,7 @@ class App extends Component {
               <Button 
                 raised 
                 className={classes.btn}
-                style={{marginTop: 15, display: document.webkitIsFullScreen? 'none': 'block'}}
+                style={{marginTop: 15, display: screenfull.isFullscreen? 'none': 'block'}}
                 onClick={this.handleClickFullScreen}>FullScreen
               </Button>
             </div>  
